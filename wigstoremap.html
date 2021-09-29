@@ -1,0 +1,210 @@
+<html>
+
+<head>
+	<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wig store Locator</title>
+  <style>
+    #map {
+      height: 100%;
+    }
+    
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+   
+
+  </style>
+  <!-- The div to hold the map -->
+  
+	
+  <div id="map"></div>
+  
+	
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACvE0YRjwaVqBEgAyp6umsXneHI_ElILg&libraries=places&callback=initMap">
+  </script>
+  
+  
+</head>
+
+<body>
+  <script>
+	
+
+var storeJson = [{
+        "properties": {
+            "Name": "Dolledby.ni",
+            "Address": "1025 east 102nd street Brooklyn New York 11236",
+            "Phone": "7186742726",
+            "Coordinates": [40.6440703160242, -73.8943382243727],
+			"image": "https://cdn.shopify.com/s/files/1/0512/2123/3846/files/dolledby.ni.jpg",
+        }
+
+    },
+    {
+        "properties": {
+            "Name": "FinesseTheLace",
+            "Address": "Flat 35 one Newgate Croydon cr0 2fb",
+            "Phone": "447535351477",
+            "Coordinates": [51.3820097405752, -0.0983778446097717],
+			"image": "https://cdn.shopify.com/s/files/1/0512/2123/3846/files/finessethelace.jpg",
+        }
+    },
+    {
+        "properties": {
+            "Name": "The Hair Galore",
+            "Address": "19a Lincoln way, London, Middlesex, EN1 1TE, United Kingdom",
+            "Phone": "7397959645",
+            "Coordinates": [51.6455566526086, -0.054892575066496],
+			"image": "https://cdn.shopify.com/s/files/1/0512/2123/3846/files/the-hair-galore.jpg",
+        }
+    },
+    {
+        "properties": {
+            "Name": "Hlaced",
+            "Address": "Flat 31 booth court thurston road se13 7gu",
+            "Phone": "447480402058",
+            "Coordinates": [51.466099316816, -0.016639141882653],
+			"image": "https://cdn.shopify.com/s/files/1/0512/2123/3846/files/hlaced.jpg",
+        }
+    },
+    {
+        "properties": {
+            "Name": "Yluxe",
+            "Address": "20 deedmore road, Cv2 1eg, COVENTRY WESTMIDLANDS",
+            "Phone": "44 7957 158244",
+            "Coordinates": [52.4337096421382, -1.46522481682007],
+			"image": "https://cdn.shopify.com/s/files/1/0512/2123/3846/files/yluxe.jpg",
+        }
+    },
+    {
+        "properties": {
+            "Name": "Asashaartistry",
+            "Address": "1260 Webster Ave apt 14c Bronx New York 10456",
+            "Phone": "6464077629",
+            "Coordinates": [40.8329579849418, -73.9085197661942],
+			"image": "https://cdn.shopify.com/s/files/1/0512/2123/3846/files/asashaartistry.jpg",
+        }
+    },
+    {
+        "properties": {
+            "Name": "Hair Goes Nina",
+            "Address": "137-16 227th Street Laurelton NY 11413",
+            "Phone": "646-633-1704",
+            "Coordinates": [40.6733579509238, -73.745555299617],
+			"image": "https://cdn.shopify.com/s/files/1/0512/2123/3846/files/hair-goes-nina.jpg",
+        }
+    },
+    {
+        "properties": {
+            "Name": "Londoncarter.Beauty",
+            "Address": "5414 74th street Elmhurst ny 11373 suite 4402",
+            "Phone": "6464576441",
+            "Coordinates": [40.7296794261052, -73.8877078816704],
+			"image": "https://cdn.shopify.com/s/files/1/0512/2123/3846/files/london-carter-beauty.jpg",
+        }
+    },
+    {
+        "properties": {
+            "Name": "Kumikreates",
+            "Address": "82 Blenheim road,Northolt,Middlesex,UB5 4TS,London,United Kingdom",
+            "Phone": "44 07841482236",
+            "Coordinates": [51.5506905134135, -0.359083572556369],
+			"image": "https://cdn.shopify.com/s/files/1/0512/2123/3846/files/kumikreates.jpg",
+        }
+    },
+    {
+        "properties": {
+            "Name": "Krowned by Kay Michelle",
+            "Address": "750 Southland Pass stonemountain ga 30087",
+            "Phone": "404-561-5589",
+            "Coordinates": [33.7739417502171, -84.1277026994705],
+			"image": "https://cdn.shopify.com/s/files/1/0512/2123/3846/files/krowned-by-kay-michelle.jpg",
+        }
+    }
+]
+
+var markers = [];
+var map;
+var infowindow;
+
+var bounds;
+var myList = document.getElementById("ullist");
+function initMap() {
+    // Create the map.
+    map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 7,
+        center: {
+            lat: 40.8329579849418,
+            lng: -73.9085197661942
+        },
+        mapTypeControl: false,
+
+        fullscreenControl: false,
+        scaleControl: false,
+        streetViewControl: false,
+        zoomControl: false,
+
+    });
+
+    bounds = new google.maps.LatLngBounds();
+    infowindow = new google.maps.InfoWindow();
+
+    markers = storeJson.map((store) => storeToMarkers(store, map, infowindow));
+    map.fitBounds(bounds);
+    $("#content-list").append(myList);
+
+}
+
+const storeToMarkers = (store, map, infowindow) => {
+
+
+    const [lat, lng] = store.properties.Coordinates;
+
+
+
+    var marker = new google.maps.Marker({
+
+        position: {
+            lat,
+            lng
+        },
+        map: map,
+        phone: store.properties.Phone,
+        city: store.properties.Address,
+        name: store.properties.Name
+    });
+
+    bounds.extend(marker.getPosition());
+
+    marker.addListener("click", () => {
+        infowindow.setContent(
+            "<b>" + store.properties.Name + "</b> <br/>" + store.properties.Address + "<br/>" + store.properties.Phone + '<br/><br/> <a target="_blank" href="https://www.google.com/maps/search/?api=1&query=' + lat + "," + lng + '">View in Google maps</a>'
+        );
+        infowindow.setPosition({
+            lat,
+            lng
+        });
+
+        infowindow.open(map, marker);
+        map.panTo(marker.getPosition());
+    });
+
+
+    
+    return marker;
+};
+
+
+  
+  </script>
+  
+  
+  
+</body>
+
+</html>
