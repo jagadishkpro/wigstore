@@ -295,6 +295,10 @@ function buyNow() {
                 .addTo(map)) */
 				document.getElementById("download-row").innerHTML += centroidPt.geometry.coordinates + '&nbsp'+ "ID: " + highlightedFeatures[i].id + '<br>' ;
 				//document.getElementById("boughtgridID").innerHTML = highlightedFeatures[i].id;
+	    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+							  document.getElementById("download-row").style.fontSize = '12px';
+							  
+						}
 				map.setFeatureState({
                         source: 'gridSource',
                         id: highlightedFeatures[i].id
