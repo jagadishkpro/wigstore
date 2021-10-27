@@ -112,16 +112,7 @@ font-family: 'Open Sans', sans-serif;
     <div class="container-fluid p-0">
       <div class="row w-100" id="map-container">
         <div class="col">
-		<div id="menu" style="display:none;">
-			<input id="satellite-v9" type="radio" name="rtoggle" value="satellite" checked="checked">
-			<!-- See a list of Mapbox-hosted public styles at -->
-			<!-- https://docs.mapbox.com/api/maps/styles/#mapbox-styles -->
-			<label for="satellite-v9">satellite</label>
-
-			<input id="streets-v11" type="radio" name="rtoggle" value="streets">
-			<label for="streets-v11">streets</label>
-
-		</div>
+		
           <div id="map" ></div>
 		  
         </div>
@@ -240,15 +231,6 @@ function renderMap() {
     // init map
     map = new mapboxgl.Map(mapOptions);
 
-    const layerList = document.getElementById('menu');
-    const inputs = layerList.getElementsByTagName('input');
-
-    for (const input of inputs) {
-        input.onclick = (layer) => {
-            const layerId = layer.target.id;
-            map.setStyle('mapbox://styles/mapbox/' + layerId);
-        };
-    }
     // add nav
     var nav = new mapboxgl.NavigationControl();
 
@@ -271,7 +253,7 @@ function renderMap() {
         //downloadable(grid);
         //map.flyTo({zoom:16});
         addBoughtTiles();
-	map.resize()
+
     });
 
 }
@@ -294,11 +276,12 @@ function buyNow() {
                 .setLngLat(centroidPt.geometry.coordinates)
                 .addTo(map)) */
 				document.getElementById("download-row").innerHTML += centroidPt.geometry.coordinates + '&nbsp'+ "ID: " + highlightedFeatures[i].id + '<br>' ;
-				//document.getElementById("boughtgridID").innerHTML = highlightedFeatures[i].id;
-	    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+				
+				if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
 							  document.getElementById("download-row").style.fontSize = '14px';
 							  
 						}
+				//document.getElementById("boughtgridID").innerHTML = highlightedFeatures[i].id;
 				map.setFeatureState({
                         source: 'gridSource',
                         id: highlightedFeatures[i].id
@@ -470,16 +453,14 @@ function addLayer(map) {
 
                 highlightedFeaturesID.push(e.features[0].id)
 
-                highlightedFeatures.forEach(function (f) {
-                    // For each feature, update its 'highlight' state
-
+                
                     map.setFeatureState({
                         source: 'gridSource',
-                        id: f.id
+                        id: e.features[0].id
                     }, {
                         highlight: true
                     });
-                });
+                
             }
 
         } else {
@@ -492,16 +473,12 @@ function addLayer(map) {
 
                 highlightedFeaturesID.push(e.features[0].id)
 
-                highlightedFeatures.forEach(function (f) {
-                    // For each feature, update its 'highlight' state
-
-                    map.setFeatureState({
+                map.setFeatureState({
                         source: 'gridSource',
-                        id: f.id
+                        id: e.features[0].id
                     }, {
                         highlight: true
                     });
-                });
 
             }
 
