@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaflet.draw Plugin</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+  integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+  crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+  integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+  crossorigin=""></script>
+    <link 
+        rel="stylesheet" 
+        href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"
+    />
+	<style>
+* {
+  box-sizing: border-box;
+}
+
+.box {
+  float: left;
+  width: 30%;
+  padding: 50px;
+  height: 600px;
+}
+
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+
+@media screen and (max-width: 450px) {
+	  .box {
+		  float: left;
+		  width: 70%;
+		  padding: 50px;
+		  height: 600px;
+		}
+	  .map{
+	  
+		height: 50%;
+		width: 100%;
+	  }
+	  
+	  
+	  
+	}
+
+    
+</style>
+</head>
+<body>
+    <div class="box" id="map" style="width: 900px; height: 600px"></div>
+	<div class="box" id="geojsonText"style="background-color:#ccc"></div>
+    
+    </script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js">
+    </script>
+
+
+
+    <script>
+        var map = L.map('map').setView([-41.2858, 174.78682], 14);
+        mapLink =
+            '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+        L.tileLayer(
+            'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; ' + mapLink + ' Contributors',
+            maxZoom: 18,
+        }).addTo(map);
+
+        var drawnItems = new L.FeatureGroup();
+        map.addLayer(drawnItems);
+
+        let canCreateNewDraw = true;
+        let drawControl;
+
+        _initToolbar();
+
+        function _initToolbar() {
+            if (drawControl)
+                map.removeControl(drawControl);
+
+            drawControl = new L.Control.Draw({
+                position: 'topright',
+                draw: {
+                    polyline: false,
+                    polygon: canCreateNewDraw,
+                    rectangle: canCreateNewDraw,
+                    circle: false,
+                    marker: false,
+                    circlemarker: false,
+                },
+                edit: {
+                    featureGroup: drawnItems,
+                    edit: false,
+                    remove: true
+                }
+            });
+
+            map.addControl(drawControl);
+        }
+
+        map.on(L.Draw.Event.CREATED, function (e) {
+            var layer = e.layer;
+            drawnItems.addLayer(layer);
+			document.getElementById("geojsonText").innerHTML = JSON.stringify(layer.toGeoJSON());
+            console.log(layer.toGeoJSON())
+            canCreateNewDraw = false;
+            _initToolbar();
+        });
+
+        map.on(L.Draw.Event.DELETED, function () {
+            if (drawnItems.getLayers().length === 0) {
+                canCreateNewDraw = true;
+                _initToolbar();
+				document.getElementById("geojsonText").innerHTML = "";
+            }
+        });
+    </script>
+</body>
+</html>
